@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@project/libs/shared/app/types": ["libs/shared/app/types/src/index.ts"],
+      "@project/shared/blog/models": ["libs/shared/blog/models/src/index.ts"],
       "@project/shared/config/account": [
         "libs/shared/config/account/src/index.ts"
       ],
