@@ -1,5 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
+import { validateConfig } from '@project/shared/helpers';
+import { ValidateConfigErrorMessage } from '@project/libs/shared/app/types';
 
 const DEFAULT_PORT = 3002;
 const DEFAULT_MONGO_PORT = 27025;
@@ -65,13 +67,6 @@ const validationSchema = Joi.object({
   }),
 });
 
-function validateConfig(config: NotifyConfig): void {
-  const { error } = validationSchema.validate(config, { abortEarly: true });
-  if (error) {
-    throw new Error(`[Notify Config Validation Error]: ${error.message}`);
-  }
-}
-
 function getConfig(): NotifyConfig {
   const config: NotifyConfig = {
     environment: process.env.NODE_ENV as Environment,
@@ -101,7 +96,7 @@ function getConfig(): NotifyConfig {
     },
   };
 
-  validateConfig(config);
+  validateConfig<NotifyConfig>(config, validationSchema, ValidateConfigErrorMessage.NotifyConfig);
   return config;
 }
 

@@ -14,3 +14,4 @@ export * from './lib/subscriber.interface';
 export * from './lib/rabbit-routing.enum';
 export * from './lib/sort-by.enum';
 export * from './lib/request-with-token-payload';
+export * from './lib/validate-config-error-message.enum';

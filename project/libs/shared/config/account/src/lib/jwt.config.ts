@@ -1,5 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
+import { validateConfig } from '@project/shared/helpers';
+import { ValidateConfigErrorMessage } from '@project/libs/shared/app/types';
 
 export interface JWTConfig {
   accessTokenSecret: string;
@@ -15,14 +17,6 @@ const validationSchema = Joi.object({
   refreshTokenExpiresIn: Joi.string().required(),
 });
 
-
-function validateConfig(config: JWTConfig): void {
-  const { error } = validationSchema.validate(config, { abortEarly: true });
-  if (error) {
-    throw new Error(`[Account JWTConfig Validation Error]: ${error.message}`);
-  }
-}
-
 function getConfig(): JWTConfig {
   const config: JWTConfig = {
     accessTokenSecret: process.env.JWT_ACCESS_TOKEN_SECRET,
@@ -31,7 +25,7 @@ function getConfig(): JWTConfig {
     refreshTokenExpiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
   };
 
-  validateConfig(config);
+  validateConfig<JWTConfig>(config, validationSchema, ValidateConfigErrorMessage.JWTConfig);
   return config;
 }
 

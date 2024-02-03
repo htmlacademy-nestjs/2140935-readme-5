@@ -1,5 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
+import { validateConfig } from '@project/shared/helpers';
+import { ValidateConfigErrorMessage } from '@project/libs/shared/app/types';
 
 const DEFAULT_RABBIT_PORT = 5672;
 
@@ -21,13 +23,6 @@ const validationSchema = Joi.object({
   exchange: Joi.string().required(),
 });
 
-function validateConfig(config: RabbitConfig): void {
-  const { error } = validationSchema.validate(config, { abortEarly: true });
-  if (error) {
-    throw new Error(`[Rabbit Config Validation Error]: ${error.message}`);
-  }
-}
-
 function getConfig(): RabbitConfig {
   const config: RabbitConfig = {
     host: process.env.RABBIT_HOST,
@@ -38,7 +33,7 @@ function getConfig(): RabbitConfig {
     exchange: process.env.RABBIT_EXCHANGE,
   };
 
-  validateConfig(config);
+  validateConfig<RabbitConfig>(config, validationSchema, ValidateConfigErrorMessage.RabbitConfig);
   return config;
 }
 

@@ -1,5 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
+import { validateConfig } from '@project/shared/helpers';
+import { ValidateConfigErrorMessage } from '@project/libs/shared/app/types';
 
 const DEFAULT_PORT = 3000;
 const DEFAULT_MONGO_PORT = 27017;
@@ -35,13 +37,6 @@ const validationSchema = Joi.object({
   })
 });
 
-function validateConfig(config: FileStorageConfig): void {
-  const { error } = validationSchema.validate(config, { abortEarly: true });
-  if (error) {
-    throw new Error(`[FileStorage Config Validation Error]: ${error.message}`);
-  }
-}
-
 function getConfig(): FileStorageConfig {
   const config: FileStorageConfig = {
     environment: process.env.NODE_ENV as Environment,
@@ -57,7 +52,8 @@ function getConfig(): FileStorageConfig {
     }
   };
 
-  validateConfig(config);
+  validateConfig<FileStorageConfig>(config, validationSchema, ValidateConfigErrorMessage.FileStorageConfig);
+
   return config;
 }
 
